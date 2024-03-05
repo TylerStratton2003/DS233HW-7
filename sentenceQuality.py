@@ -1,3 +1,6 @@
+from textblob import TextBlob
+import math
+
 # name 1: Meghan
 # name 2: Tyler
 # name 3:
@@ -20,21 +23,51 @@ class sentenceQuality():
         # https://en.wikipedia.org/wiki/Coleman%E2%80%93Liau_index
         # You should implement at least one score
 
-        return [0.1, 0.2, 0.3, 0.5, 0.6]
+        tweet = TextBlob(tweet)
+
+        # Length
+        # come back to this
+        wordLength = len(tweet.words)
+        length = 0.5
+        if wordLength > 30 | wordLength < 3:
+            length = 0.0
+        elif wordLength > 11 & wordLength < 16:
+            length = 1.0
+
+        # Polarity
+        polarity = tweet.sentiment.polarity
+
+        # Subjectivity
+        subjectivity = tweet.sentiment.subjectivity
+
+        # Readability - we are using the Automated Readability Index
+        minScore = 1
+        maxDiff = 13
+        numWords = len(tweet.words) - 1
+        numChars = sum(1 for char in tweet if char.isalnum())
+        numSentences = len(tweet.sentences)
+        readability = math.ceil((4.71 * (numChars / numWords)) + (0.5 * (numWords / numSentences)) - 21.43)
+        readability = round((readability - minScore) / maxDiff, 2) # calculated from a method to normalize scores
+
+
+        return [length, polarity, subjectivity, readability]
         pass
 
     def calculateQuality(self, scores):
         # please implement this function to calculate a final quality score between 0 and 1
         # Input: a list of scores, which is the output of calculateScores
         # output: 0 means low quality, 1 mean high quality
-
-        return 0.5
+        sum = 0
+        for num in scores:
+            sum = sum + num
+        score = round(sum / len(scores), 3)
+        return score
         pass
 
 
 # this is for testing only
 obj = sentenceQuality()
-s = "DATA 233 is a wonderful class!"
+s = "DATA 233 is an excellent, challenging, and very exciting class!"
 
 print("The scores for your input is " + str(obj.calculateScores(s)))
 
