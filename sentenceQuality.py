@@ -28,11 +28,28 @@ class sentenceQuality():
         # Length
         # come back to this
         wordLength = len(tweet.words)
-        length = 0.5
-        if wordLength > 30 | wordLength < 3:
-            length = 0.0
-        elif wordLength > 11 & wordLength < 16:
+        length = 1.0
+        if wordLength > 11 & wordLength < 16:
             length = 1.0
+        else:
+            if wordLength > 15:
+                num = 2
+                inc = 5
+                length = length - 0.25
+                while (wordLength >= 15 + (inc * num)):
+                    num = num + 1
+                    length = length - 0.25
+                    if (length > 0.0):
+                        length = 0.0
+            elif wordLength < 12:
+                num = 2
+                inc = 4
+                length = length - 0.25
+                while (wordLength <= 12 - (inc * num)):
+                    num = num + 1
+                    length = length - 0.25
+                    if (length > 0.0):
+                        length = 0.0
 
         # Polarity
         polarity = tweet.sentiment.polarity
